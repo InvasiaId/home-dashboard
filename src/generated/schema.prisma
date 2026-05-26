@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String @id @default(uuid())
+  name      String @default("DevDash User")
+  avatarUrl String @default("https://api.dicebear.com/7.x/avataaars/svg?seed=Felix")
+
+  // RPG Stats
+  xp     Int @default(0)
+  level  Int @default(1)
+  health Int @default(100)
+  mana   Int @default(50)
+  gold   Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi
+  projects     Project[]
+  activities   Activity[]
+  habits       Habit[]
+  financeAccs  FinanceAccount[]
+  transactions Transaction[]
+  deedsLogs    DeedsLog[]
+  notes        Note[]
+  knowledge    KnowledgeMaterial[]
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  name        String
+  description String?   @db.Text
+  progress    Int       @default(0)
+  status      String    @default("ACTIVE")
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+  rewardUrl   String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Activity {
+  id       String  @id @default(uuid())
+  name     String
+  xpReward Int
+  isFocus  Boolean @default(false)
+  category String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Habit {
+  id         String    @id @default(uuid())
+  name       String
+  type       String
+  tier       String
+  intensity  Int       @default(1)
+  streak     Int       @default(0)
+  lastLogged DateTime?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FinanceAccount {
+  id      String @id @default(uuid())
+  name    String
+  balance Float  @default(0)
+  type    String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  amount      Float
+  type        String // INCOME, EXPENSE
+  date        DateTime @default(now())
+  description String?
+  categoryId  String
+  accountId   String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DeedsLog {
+  id         String   @id @default(uuid())
+  type       String // GOOD, BAD
+  categoryId String
+  count      Int      @default(1)
+  date       DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  title     String
+  content   String   @db.Text
+  folderId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model KnowledgeMaterial {
+  id         String   @id @default(uuid())
+  title      String
+  type       String
+  status     String
+  sourceUrl  String?
+  progress   Int      @default(0)
+  categoryId String
+  createdAt  DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

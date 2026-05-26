@@ -1,0 +1,6 @@
+{
+  "name": "Personal Home Dashboard",
+  "description": "A personal home dashboard built with React, Vite, Tailwind CSS, and Express.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
