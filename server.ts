@@ -2,9 +2,10 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 
+
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = 5173;
 
   // Add JSON parsing middleware
   app.use(express.json());
